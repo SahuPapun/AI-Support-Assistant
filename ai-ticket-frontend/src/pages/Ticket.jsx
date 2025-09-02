@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown from "react";
 
 export default function TicketDetailsPage() {
   const { id } = useParams();

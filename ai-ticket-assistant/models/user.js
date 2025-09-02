@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "moderator", "admin"],
       default: "user",
     },
+    skills:[String]
   },
   { timestamps: true } // adds createdAt & updatedAt automatically
 );
