@@ -40,16 +40,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200">
-      <div className="card w-full max-w-sm shadow-xl bg-base-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
+      <div className="card w-full max-w-sm shadow-2xl bg-white rounded-2xl border border-purple-200">
         <form onSubmit={handleLogin} className="card-body">
-          <h2 className="card-title justify-center">Login</h2>
+          <h2 className="card-title justify-center text-3xl font-bold text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text mb-6">
+            Login
+          </h2>
 
           <input
             type="email"
             name="email"
             placeholder="Email"
-            className="input input-bordered"
+            className="input input-bordered mb-4 px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={form.email}
             onChange={handleChange}
             required
@@ -59,7 +61,7 @@ export default function LoginPage() {
             type="password"
             name="password"
             placeholder="Password"
-            className="input input-bordered"
+            className="input input-bordered mb-4 px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
             value={form.password}
             onChange={handleChange}
             required
@@ -68,10 +70,17 @@ export default function LoginPage() {
           <div className="form-control mt-4">
             <button
               type="submit"
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold rounded-lg shadow hover:scale-105 transition-transform"
               disabled={loading}
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? (
+                <span>
+                  <span className="animate-spin inline-block mr-2">🔄</span>
+                  Logging in...
+                </span>
+              ) : (
+                "Login"
+              )}
             </button>
           </div>
         </form>

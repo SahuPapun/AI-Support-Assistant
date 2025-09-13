@@ -43,49 +43,50 @@ export default function TicketDetailsPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Ticket Details</h2>
+      <h2 className="text-4xl font-extrabold mb-8 text-center text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text">
+        Ticket Details
+      </h2>
 
-      <div className="card bg-gray-800 shadow p-4 space-y-4">
-        <h3 className="text-xl font-semibold">{ticket.title}</h3>
-        <p>{ticket.description}</p>
+      <div className="card bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 shadow-2xl p-8 space-y-6 rounded-2xl border border-purple-200">
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">{ticket.title}</h3>
+        <p className="text-lg text-gray-700 mb-4">{ticket.description}</p>
 
         {/* Conditionally render extended details */}
         {ticket.status && (
           <>
-            <div className="divider">Metadata</div>
-            <p>
-              <strong>Status:</strong> {ticket.status}
-            </p>
-            {ticket.priority && (
-              <p>
-                <strong>Priority:</strong> {ticket.priority}
-              </p>
-            )}
-
-            {ticket.relatedSkills?.length > 0 && (
-              <p>
-                <strong>Related Skills:</strong>{" "}
-                {ticket.relatedSkills.join(", ")}
-              </p>
-            )}
+            <div className="divider font-semibold text-purple-500">Metadata</div>
+            <div className="flex flex-wrap gap-4 mb-2">
+              <span className={`px-3 py-1 rounded-full text-white font-medium shadow ${ticket.status === "open" ? "bg-green-500" : ticket.status === "closed" ? "bg-red-500" : "bg-yellow-500"}`}>
+                Status: {ticket.status}
+              </span>
+              {ticket.priority && (
+                <span className="px-3 py-1 rounded-full bg-pink-200 text-pink-800 font-medium shadow">
+                  Priority: {ticket.priority}
+                </span>
+              )}
+              {ticket.relatedSkills?.length > 0 && (
+                <span className="px-3 py-1 rounded-full bg-blue-200 text-blue-800 font-medium shadow">
+                  Skills: {ticket.relatedSkills.join(", ")}
+                </span>
+              )}
+              {ticket.assignedTo && (
+                <span className="px-3 py-1 rounded-full bg-purple-200 text-purple-800 font-medium shadow">
+                  Assigned: {ticket.assignedTo?.email}
+                </span>
+              )}
+            </div>
 
             {ticket.helpfulNotes && (
-              <div>
-                <strong>Helpful Notes:</strong>
-                <div className="prose max-w-none rounded mt-2">
+              <div className="mt-4">
+                <strong className="block text-lg text-purple-700 mb-2">Helpful Notes:</strong>
+                <div className="prose max-w-none rounded bg-white p-4 shadow">
                   <ReactMarkdown>{ticket.helpfulNotes}</ReactMarkdown>
                 </div>
               </div>
             )}
 
-            {ticket.assignedTo && (
-              <p>
-                <strong>Assigned To:</strong> {ticket.assignedTo?.email}
-              </p>
-            )}
-
             {ticket.createdAt && (
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-500 mt-4 text-right">
                 Created At: {new Date(ticket.createdAt).toLocaleString()}
               </p>
             )}
