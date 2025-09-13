@@ -6,9 +6,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CheckAuth from "./components/check-auth.jsx";
 import Tickets from "./pages/Tickets.jsx";
 import TicketDetailsPage from "./pages/Ticket.jsx";
-import Login from "./pages/login.jsx";
-import Signup from "./pages/signup.jsx";
-import Admin from "./pages/admin.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
+import Admin from "./pages/Admin.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
