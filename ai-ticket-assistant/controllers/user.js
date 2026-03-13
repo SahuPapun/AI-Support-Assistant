@@ -5,8 +5,18 @@ import { inngest } from "../inngest/client.js";
 
 export const signup = async (req, res) => {
   const { email, password, skills = [] } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
   try {
-    const hashed = await bcrypt.hash(password, 10); // ✅ added await
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already in use" });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({ email, password: hashed, skills });
 
     // Fire inngest event
@@ -20,23 +30,28 @@ export const signup = async (req, res) => {
       process.env.JWT_SECRET
     );
 
-    res.json({ user, token });
+    const { password: _pw, ...userWithoutPassword } = user.toObject();
+    return res.status(201).json({ user: userWithoutPassword, token });
   } catch (error) {
-    res.status(500).json({ error: "Signup failed", details: error.message });
+    res.status(500).json({ message: "Signup failed", details: error.message });
   }
 };
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
-  try {
-    const user = await User.findOne({ email }); // ✅ added await
-    if (!user) return res.status(401).json({ error: "User not found" });
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
 
-    const isMatch = await bcrypt.compare(password, user.password); // ✅ fixed typo
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ message: "Invalid email or password" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign(
@@ -44,24 +59,27 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET
     );
 
-    res.json({ user, token });
+    const { password: _pw, ...userWithoutPassword } = user.toObject();
+    return res.json({ user: userWithoutPassword, token });
   } catch (error) {
-    res.status(500).json({ error: "Login failed", details: error.message });
+    res.status(500).json({ message: "Login failed", details: error.message });
   }
 };
 
 export const logout = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1]; // ✅ added safe optional chaining
-    if (!token) return res.status(401).json({ error: "Unauthorized" });
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
 
-    jwt.verify(token, process.env.JWT_SECRET, (err) => {
-      if (err) return res.status(401).json({ error: "Unauthorized" });
-    });
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-    res.json({ message: "Logout successfully" });
+    return res.json({ message: "Logout successfully" });
   } catch (error) {
-    res.status(500).json({ error: "Logout failed", details: error.message }); // ✅ fixed wrong error message
+    res.status(500).json({ message: "Logout failed", details: error.message });
   }
 };
 
